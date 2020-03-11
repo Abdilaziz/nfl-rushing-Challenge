@@ -60,14 +60,18 @@ After cloning the repository with:
 
 With Docker:
 
-    If you have Docker installed, you can use the Dockerfile to generate an image using:
-    ```
-    1) docker image build -t `ImageName` .
-    ```
+    Just run the included shell script with ./run.sh
+
+    Or
+
+    You can use the Dockerfile to generate an image using:
+    
+    1) docker image build -t nfl-rushing .
+    
     Run the image with:
-    ```
-    2) docker container run --publish 3000:3000 --detach --name gp `ImageName`
-    ```
+    
+    2) docker container run --publish 3000:3000 --detach --name nr nfl-rushing
+    
     Docker container is now running so visit localhost:3000 to see the front end.
     
     With docker-toolbox, use docker-machine ip to get the correct ip and visit
@@ -75,10 +79,9 @@ With Docker:
 
 
 Without Docker:
-    ```
+    
     1) npm install
-    ```
-    ```
+     
     2) npm start
-    ```
+    
     Then visit localhost:3000 to see the front end.
