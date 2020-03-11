@@ -16,6 +16,8 @@ const DEFAULT_LIMIT = 50; // default if no limit query parameter is used
 
 const DEFAULT_OFFSET = 0; // default offset if no query parameter is used
 
+const DEFAULT_SORT = 'ID'; // Sort by id Field by default (same order as listed in JSON)
+const DEFAULT_ORDERBY = 'asc'; // order is ascending by default
 
 rushingRouter.route('/')
 .all((req, res, next) => {
@@ -24,6 +26,8 @@ rushingRouter.route('/')
 .get( (req, res, next) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
+
+  // Validate Query Params. Validation should be implemented elsewhere for reuse.
 
   let limit = DEFAULT_LIMIT;
   // if limit query param is defined, and is a valid number
@@ -43,9 +47,21 @@ rushingRouter.route('/')
     }
   }
 
+  let sort = DEFAULT_SORT;
+  // if sorting query param is defined,
+  if (req.query.sort) {
+    let parsedSort = req.query.sort;
+    if (Footballrushing.isField(parsedSort)) {
+      sort = parsedSort;
+    }
+  }
 
+  let orderBy = DEFAULT_ORDERBY;
+  if (req.query.order_by && req.query.order_by === "desc" ) {
+    orderBy = "desc";
+  }
 
-  res.json(Footballrushing.getData(limit,offset));
+  res.json(Footballrushing.getData(limit,offset, sort, orderBy));
 })
 .post( (req, res, next) => {
   res.statusCode = 403;
