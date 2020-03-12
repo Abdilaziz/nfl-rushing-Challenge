@@ -1,81 +1,51 @@
 let _ = require("lodash");
+const HelperFunctions = require('../helpers/functions');
 
 let rushingObj = require("../data/rushing.json");
 // Information of a football players rushing statistics is acquired here
 
-class Rushing {
+class FootballRushingModel {
 
     constructor(data) {
         // array of players rushing statistics
         this.data = data;
+        
+        // total amount of players
         this.total = this.data.length;
+
+        // supported Sortable Fields
         this.sortableFields = ['ID', 'Player', 'Yds', 'Lng', 'TD'];
+
+        // support all fields
+        // this.sortableFields = Object.keys(this.data[0]);
     }
 
-    getData = (limit, offset, sort, orderBy) => {
-        // console.log(limit, offset, sort);
+    getDataJSON = (limit, offset, sort, orderBy, playerfilter) => {
+        return new Promise((resolve, reject)=>{
+            // console.log(limit, offset, sort, orderBy, playerfilter);
+            
+            // ensure this.data is immutable
+            let org_data = _.cloneDeep(this.data);
 
-        // deep clone the dataset (because it should be immutable)
-        let sortedData = _.cloneDeep(this.data);
-        
-        // some JSON data types need to be validated.
-        // some fields have mixed types 
+            // don't bother running filter function if playerfilter is ''
+            let filteredData = (playerfilter)? HelperFunctions.filterStringItems('Player', org_data, playerfilter) : org_data;
+            
+            // sort the data if the field isn't the default
+            let sortedData = (sort !== "ID")? HelperFunctions.sortData(sort, filteredData, orderBy) : filteredData;
 
-        if (sort !== "ID") {
-            if (typeof(sortedData[0][sort]) === "string" ) {
-                if (orderBy === "asc") {
-                    sortedData.sort((a, b)=>{
-                        let x = a[sort].toLowerCase();
-                        let y = b[sort].toLowerCase();
-                        if (x < y) {return -1;}
-                        if (x > y) {return 1;}
-                        return 0;
-                    });
-                }
-                else if (orderBy === "desc") {
-                    sortedData.sort((a, b)=>{
-                        let x = a[sort].toLowerCase();
-                        let y = b[sort].toLowerCase();
-                        if (x > y) {return -1;}
-                        if (x < y) {return 1;}
-                        return 0;
-                    });
-                }
-            }
-            else if (typeof(sortedData[0][sort]) === "number" ) {
-                if (orderBy === "asc") {
-                    sortedData.sort((a, b)=>{
-                        return a[sort] - b[sort];
-                    });
-                }
-                else if (orderBy === "desc") {
-                    sortedData.sort((a, b)=>{
-                        return b[sort] - a[sort];
-                    });
-                }
-            }
-        }
+            let limitedData = HelperFunctions.getArraySubset(sortedData, limit, offset);
 
-        let limitedData = [];
-        let index = offset;
-        
-        while (index < this.total && limitedData.length < limit) {
-            limitedData.push( sortedData[index] )
-            index++;
-        }
-        // console.log('Length: ', limitedData.length);
+            // console.log('Length: ', limitedData.length);
 
-        // should add total number of resources available in the collection
-        // this is used by the clients
-        let responseObj = {};
-        responseObj.data = limitedData;
-        responseObj.total = this.total;
+            // should add total number of resources available in the collection
+            // this is used by the clients
+            let responseObj = {};
+            
+            responseObj.data = limitedData;
+            responseObj.total = this.total;
 
-        return responseObj;
-    };
-
-    getAllData = () => {
-        return this.data;
+            resolve(responseObj);            
+        });
     };
 
     isField = (field) => {
@@ -84,6 +54,5 @@ class Rushing {
 
 }
 
-Footballrushing = new Rushing(rushingObj);
-
-module.exports = Footballrushing;
+// a single instance of this class should exist (Singleton Design)
+module.exports = new FootballRushingModel(rushingObj);

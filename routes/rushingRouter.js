@@ -1,23 +1,15 @@
 const express = require('express');
 const rushingRouter = express.Router();
 const bodyParser = require('body-parser');
-const Footballrushing = require('../models/rushing');
+let _ = require("lodash");
+
+const FootballRushingService = require('../service/rushing');
 
 // use body-parser to validate JSON data sent by clients
 // checks that the Content-Type header matches the request body
 // bodyParser.json(option)
 // Lets you limit the Content-Type, Size, more
 rushingRouter.use(bodyParser.json());
-
-
-
-const MAX_LIMIT = 500; // max is used in order to stop heavy processing/DoS attacks
-const DEFAULT_LIMIT = 50; // default if no limit query parameter is used
-
-const DEFAULT_OFFSET = 0; // default offset if no query parameter is used
-
-const DEFAULT_SORT = 'ID'; // Sort by id Field by default (same order as listed in JSON)
-const DEFAULT_ORDERBY = 'asc'; // order is ascending by default
 
 rushingRouter.route('/')
 .all((req, res, next) => {
@@ -27,41 +19,19 @@ rushingRouter.route('/')
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
 
-  // Validate Query Params. Validation should be implemented elsewhere for reuse.
 
-  let limit = DEFAULT_LIMIT;
-  // if limit query param is defined, and is a valid number
-  if (req.query.limit) {
-    let parsedLimit = parseInt(req.query.limit);
-    if (parsedLimit && parsedLimit > 0 && parsedLimit <= MAX_LIMIT) {
-      limit = parsedLimit;
-    }
-  }
+  let limit = req.query.limit;
+  let offset = req.query.offset;
+  let sort = req.query.sort;
+  let orderBy = req.query.orderBy;
+  let playerfilter = req.query.playerFilter;
 
-  let offset = DEFAULT_OFFSET;
-  // if offset query param is defined, and is valid (no max)
-  if (req.query.offset) {
-    let parsedOffset = parseInt(req.query.offset);
-    if (parsedOffset && parsedOffset >= 0) {
-      offset = parsedOffset;
-    }
-  }
-
-  let sort = DEFAULT_SORT;
-  // if sorting query param is defined,
-  if (req.query.sort) {
-    let parsedSort = req.query.sort;
-    if (Footballrushing.isField(parsedSort)) {
-      sort = parsedSort;
-    }
-  }
-
-  let orderBy = DEFAULT_ORDERBY;
-  if (req.query.order_by && req.query.order_by === "desc" ) {
-    orderBy = "desc";
-  }
-
-  res.json(Footballrushing.getData(limit,offset, sort, orderBy));
+  // validation of query params is done in the service
+  FootballRushingService.getData(limit,offset, sort, orderBy, playerfilter)
+  .then((data)=> {
+    res.json(data);
+  })
+  .catch(next);
 })
 .post( (req, res, next) => {
   res.statusCode = 403;
