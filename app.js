@@ -3,12 +3,18 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const compression = require('compression');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const rushingRouter = require('./routes/rushingRouter');
 
 const app = express();
+
+// enable compression of text (speed up web app)
+// high traffic websites usually implement compression on 
+// load balancer/reverse proxy. (difference being load balancer implies a group of servers rather than 1)
+app.use(compression());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
