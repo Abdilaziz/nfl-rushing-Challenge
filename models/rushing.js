@@ -23,7 +23,7 @@ class FootballRushingModel {
         // this.sortableFields = Object.keys(this.data[0]);
     }
 
-    getDataJSON = (limit, offset, sort, orderBy, playerfilter) => {
+    getDataJSON(limit, offset, sort, orderBy, playerfilter) {
         return new Promise((resolve, reject)=>{
             // console.log(limit, offset, sort, orderBy, playerfilter);
             
@@ -53,7 +53,7 @@ class FootballRushingModel {
         });
     };
 
-    isField = (field) => {
+    isField(field) {
        return this.sortableFields.includes(field);
     };
 
