@@ -13,6 +13,9 @@ class FootballRushingModel {
         // total amount of players
         this.total = this.data.length;
 
+        // total after filtering
+        this.filteredTotal = 0;
+
         // supported Sortable Fields
         this.sortableFields = ['ID', 'Player', 'Yds', 'Lng', 'TD'];
 
@@ -29,7 +32,8 @@ class FootballRushingModel {
 
             // don't bother running filter function if playerfilter is ''
             let filteredData = (playerfilter)? HelperFunctions.filterStringItems('Player', org_data, playerfilter) : org_data;
-            
+            this.filteredTotal = filteredData.length;
+
             // sort the data if the field isn't the default
             let sortedData = (sort !== "ID")? HelperFunctions.sortData(sort, filteredData, orderBy) : filteredData;
 
@@ -43,6 +47,7 @@ class FootballRushingModel {
             
             responseObj.data = limitedData;
             responseObj.total = this.total;
+            responseObj.filteredTotal = this.filteredTotal;
 
             resolve(responseObj);            
         });
