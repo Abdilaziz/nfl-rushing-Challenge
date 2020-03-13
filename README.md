@@ -55,10 +55,10 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
 ### Installation and running this solution
 
-##### First clone the repository with:
+#### First clone the repository with:
     git clone git@github.com:Abdilaziz/nfl-rushing-Challenge.git
 
-##### Running with Docker:
+#### Running with Docker:
 Just run the included shell script with: 
     
     ./run.sh
@@ -92,7 +92,7 @@ and open up your browser to:
 to see the front end.
 
 
-##### Without Docker:
+#### Without Docker:
 
 You will require node.
     
