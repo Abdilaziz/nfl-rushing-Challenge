@@ -13,9 +13,11 @@ const DEFAULT_SORT = 'ID'; // Sort by id Field by default (same order as listed 
 const DEFAULT_ORDERBY = 'asc'; // order is ascending by default
 const DEFAULT_PLAYERFILTER = ''; // no filter by default
 
+const MAX_ROWS_DOWNLOADABLE = 10000;
+
 let FootballRushingService = () => {
     return {
-        getData: (limit, offset, sort, orderBy, playerfilter) => {
+        getData: (limit, offset, sort, orderBy, playerfilter, download) => {
             // we want inputs to be immutable
             let query_limit = _.cloneDeep(limit);
             query_limit = parseInt(query_limit);
@@ -42,6 +44,12 @@ let FootballRushingService = () => {
             let query_playerfilter = _.cloneDeep(playerfilter);
             if (!HelperFunctions.isString(query_playerfilter)) {
                 query_playerfilter = DEFAULT_PLAYERFILTER;
+            }
+
+            let query_download = _.cloneDeep(download);
+            if (HelperFunctions.isString(query_download) && query_download === 'csv' ) {
+                query_limit = MAX_ROWS_DOWNLOADABLE;
+                query_offset = DEFAULT_OFFSET;
             }
 
             return new Promise((resolve, reject) => {

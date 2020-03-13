@@ -1,10 +1,11 @@
-
 // Datatables API: https://datatables.net/reference/option/
+
+const url_endpoint = '/football/rushing';
 
 let initTable = () => {
     $('#rushingDataTable').DataTable({
         serverSide: true,
-        processing: true,
+        processing: false, // can display processing when data is being updated
         paging: true,
         info: true,
         pagingType: "numbers",
@@ -19,7 +20,7 @@ let initTable = () => {
             zeroRecords: "No player rushing statistics to display"
         },
         ajax: {
-            url: '/football/rushing',
+            url: url_endpoint,
             dataType: "json",
             contentType: "application.json; charset=utf-8",
             data: function(data) {
@@ -36,6 +37,17 @@ let initTable = () => {
                 return query_params;  
             },
         },
+        dom: 'Bfrtip',
+        buttons: [
+            // 'copyHtml5
+            // 'csvHtml5',
+            {
+                text: 'Export CSV',
+                action: function(e, dt, node, config){
+                    downloadCSV(dt);
+                }
+            }
+        ],
         columns: [
             {
                 data: "Player",
@@ -119,6 +131,34 @@ let initTable = () => {
           });
     $('.dataTables_length').addClass('bs-select');
 }
+
+let downloadCSV = (dt) => {
+    // pass query param to download a csv
+    let query_params = dt.ajax.params();
+    let queryString = $.param(query_params);
+    queryString = '?' + queryString + '&download=csv'; 
+    console.log(queryString);
+
+    $.ajax({
+        url: url_endpoint + queryString,
+        contentType: 'application/octet-stream',
+        error: function() {
+            console.log("Error has occured Downloading CSV");
+        },
+        success: function(resp) {
+            // console.log("RESPONSE:",resp);
+            let downloadLink = document.createElement('a');
+
+            let blob = new Blob(["\ufeff",resp]);
+            let url_obj = URL.createObjectURL(blob);
+            downloadLink.setAttribute("href", url_obj);
+            downloadLink.setAttribute('download', 'nfl-rusing-data.csv');
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+    });
+};
 
 $(document).ready(function () {
     initTable();
