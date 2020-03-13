@@ -10,6 +10,7 @@ let initTable = () => {
         info: true,
         pagingType: "numbers",
         pageLength: 10,
+        lengthChange: true,
         scrollY: "500px",
         scrollCollapse: true, //limit height when number of rows is small
         searchDelay: 400,
@@ -22,7 +23,7 @@ let initTable = () => {
         ajax: {
             url: url_endpoint,
             dataType: "json",
-            contentType: "application.json; charset=utf-8",
+            contentType: "application/json;charset=utf-8",
             data: function(data) {
                 // console.log(data);
                 let query_params = {};
@@ -37,7 +38,7 @@ let initTable = () => {
                 return query_params;  
             },
         },
-        dom: 'Bfrtip',
+        dom: 'Bflrtip',
         buttons: [
             // 'copyHtml5
             // 'csvHtml5',
