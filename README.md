@@ -55,14 +55,15 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
 ### Installation and running this solution
 
-After cloning the repository with:
- git clone git@github.com:Abdilaziz/nfl-rushing-Challenge.git
+##### First clone the repository with:
+    git clone git@github.com:Abdilaziz/nfl-rushing-Challenge.git
 
-With Docker:
+##### Running with Docker:
+Just run the included shell script with: 
+    
+    ./run.sh
 
-    Just run the included shell script with ./run.sh
-
-    Or
+Or
 
     You can use the Dockerfile to generate an image using:
     
@@ -72,16 +73,34 @@ With Docker:
     
     2) docker container run --publish 3000:3000 --detach --name nr nfl-rushing
     
-    Docker container is now running so visit localhost:3000 to see the front end.
+Docker container is now running so visit: 
+
+    localhost:3000
+
+to see the front end.
+
+    <br>
+
+With **docker-toolbox**, you require the VM's IP, which you can get with: 
+
+    docker-machine ip 
+
+and open up your browser to:
     
-    With docker-toolbox, use docker-machine ip to get the correct ip and visit
-    that that ip at <ip>:3000 to see the front end.
+    VM_IP:3000
+
+to see the front end.
 
 
-Without Docker:
+##### Without Docker:
+
+You will require node.
     
-    1) npm install
-     
-    2) npm start
+    npm install
+    npm start
     
-    Then visit localhost:3000 to see the front end.
+Then visit
+    
+    localhost:3000
+
+to see the front end.
