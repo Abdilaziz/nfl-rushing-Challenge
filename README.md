@@ -79,7 +79,7 @@ Docker container is now running so visit:
 
 to see the front end.
 
-    <br>
+<br>
 
 With **docker-toolbox**, you require the VM's IP, which you can get with: 
 
